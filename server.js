@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const express = require('express');
+const { Console } = require('console');
 
 const PORT = process.env.PORT || 3001 ;
 
@@ -68,6 +69,7 @@ app.use(express.static('public'));
 //   1. You ( read ) & parse  the json file first
 var read = () => {
      const notes = JSON.parse(fs.readFileSync("./db/db.json"), "utf8");
+     console.log("this data is from read function")
      console.log(notes);
 };
 
@@ -78,15 +80,28 @@ var read = () => {
     const addedNote = { title: title, text: text, id: userID };
     //                                                     console.log (addedNote);
     const data = JSON.stringify(addedNote, null, 2);
+    console.log("this is one with id added")
     console.log(data);
-    read ();
+    
+    return read () 
+        .then(notes1 => [notes1, data]) 
+        .then(updatedN =>fs.writeFileSync("./db/db.json", updatedN))
+        .then(() => console.log("New notes added"))
+
+})
+
+
+
+/*
     notes.push(data)
     fs.writeFileSync("./db/db.json", notes);
     
     return notes;
    // readBack();
   })
-//---------------------------------------------------------
+*/
+
+  //---------------------------------------------------------
   
 
 // 2.  then you ( parse ) the reading
@@ -103,11 +118,6 @@ var read = () => {
 
 // 4. Then you ( stringify ) the array
 // 5. Then you ( write ) the file again
-
-
-
-
-
 
 
   // 3)  read db.json

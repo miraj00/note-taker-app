@@ -53,8 +53,6 @@ app.use(express.static('public'));
   // You'll need to find a way to give each note a unique id when it's saved 
   // (look into npm packages that could do this for you).
 
-//const uuidv1 = require('uuid');
-// const { text } = require('express');
 
   // 1) function for : random ID --------------------------------------------- 
   function uuid() {
@@ -66,20 +64,52 @@ app.use(express.static('public'));
   var userID=uuid(); //something like: "ec0c22fa-f909-48da-92cb-db17ecdb91c5" 
 
 
+
+//   1. You ( read ) & parse  the json file first
+var read = () => {
+     const notes = JSON.parse(fs.readFileSync("./db/db.json"), "utf8");
+     console.log(notes);
+};
+
   // 2) write in db.json file ------------------------------------------------
   app.post('/api/notes', (req, res) => {
     
-     const { title, text } = req.body;
-     const addedNote = { title: title, text: text, id: userID };
+    const { title, text } = req.body;
+    const addedNote = { title: title, text: text, id: userID };
     //                                                     console.log (addedNote);
-     const data = JSON.stringify(addedNote, null, 2);
-                                                           console.log(data);
-    fs.writeFileSync("./db/db.json", data);
+    const data = JSON.stringify(addedNote, null, 2);
+    console.log(data);
+    read ();
+    notes.push(data)
+    fs.writeFileSync("./db/db.json", notes);
     
+    return notes;
    // readBack();
   })
 //---------------------------------------------------------
   
+
+// 2.  then you ( parse ) the reading
+// var parse = () => {
+//    read();
+//    parsedNote = JSON.parse(notes);
+//    console.log(parsedNote);
+// };
+// 3 then you ( push ) the new note into the array
+// var push = () => {
+//     read ();
+//     notes.push(data);
+//     };
+
+// 4. Then you ( stringify ) the array
+// 5. Then you ( write ) the file again
+
+
+
+
+
+
+
   // 3)  read db.json
   // function readBack () {
   //   const notes = JSON.parse(fs.readFileSync("./db/db.json"), "utf8");
@@ -98,3 +128,8 @@ app.use(express.static('public'));
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
   });
+
+
+
+
+

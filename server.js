@@ -55,51 +55,52 @@ app.use(express.static('public'));
   // (look into npm packages that could do this for you).
 
 
-  // 1) function for : random ID --------------------------------------------- 
+// ----  function for : random ID --------------------------------------------- 
   function uuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
   }
-  var userID=uuid(); //something like: "ec0c22fa-f909-48da-92cb-db17ecdb91c5" 
-
-
-
-//   1. You ( read ) & parse  the json file first
-// var read = () => {
-//      const notes = JSON.parse(fs.readFileSync("./db/db.json"), "utf8");
-//      console.log("this data is from read function")
-//      console.log(notes);
-// };
-
+  var userID=uuid(); 
+//---------POST ROUTE ----------------------------------------------------------------------------------
 var read = () => {
-  return JSON.parse(fs.readFileSync("./db/db.json"), "utf8");
+  return JSON.parse(fs.readFileSync("./db/db.json"), "utf8");   // reads and parse the json file
 };
 
-  // 2) write in db.json file ------------------------------------------------
+   // write in db.json file -------------
   app.post('/api/notes', (req, res) => {
     
     const { title, text } = req.body;
-    const addedNote = { title: title, text: text, id: userID };
-    //                                                     console.log (addedNote);
+    const addedNote = { title: title, text: text, id: userID };    //adding ID -----
+    
     const oldNotes = read(); // Read notes data and save to variable
-    oldNotes.push(addedNote); // Add the new note to the array of old notes
-    fs.writeFileSync("./db/db.json", JSON.stringify(oldNotes)); // Re-write our variable (after the note has been added)
+    oldNotes.push(addedNote); // Adding the new note to the array of old notes
+    fs.writeFileSync("./db/db.json", JSON.stringify(oldNotes)); // Re-writing variable (after the note has been added)
     console.log("New notes added");
     location.reload(); 
 
 })
 
-var delete = () => {
-  const currentNotes = read();
+
+app.delete('/api/notes/:id', function (req, res) {
+  console.log("DELETE review")
+
+  // read 
+  const delNotes = read();
+  // delete
+  const result = delNotes.filter(delnote => delnote.id !== id);
   
+  console.log(result);
+
+  fs.writeFileSync("./db/db.json", JSON.stringify(result));
+})
 
 
-}
 
 
 
+//----LISTEN PORT -------------------------------------------------
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
   });

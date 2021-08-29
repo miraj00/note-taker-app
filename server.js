@@ -67,10 +67,14 @@ app.use(express.static('public'));
 
 
 //   1. You ( read ) & parse  the json file first
+// var read = () => {
+//      const notes = JSON.parse(fs.readFileSync("./db/db.json"), "utf8");
+//      console.log("this data is from read function")
+//      console.log(notes);
+// };
+
 var read = () => {
-     const notes = JSON.parse(fs.readFileSync("./db/db.json"), "utf8");
-     console.log("this data is from read function")
-     console.log(notes);
+  return JSON.parse(fs.readFileSync("./db/db.json"), "utf8");
 };
 
   // 2) write in db.json file ------------------------------------------------
@@ -79,60 +83,21 @@ var read = () => {
     const { title, text } = req.body;
     const addedNote = { title: title, text: text, id: userID };
     //                                                     console.log (addedNote);
-    const data = JSON.stringify(addedNote, null, 2);
-    console.log("this is one with id added")
-    console.log(data);
-    
-    return read () 
-        .then(notes1 => [notes1, data]) 
-        .then(updatedN =>fs.writeFileSync("./db/db.json", updatedN))
-        .then(() => console.log("New notes added"))
+    const oldNotes = read(); // Read notes data and save to variable
+    oldNotes.push(addedNote); // Add the new note to the array of old notes
+    fs.writeFileSync("./db/db.json", JSON.stringify(oldNotes)); // Re-write our variable (after the note has been added)
+    console.log("New notes added");
+    location.reload(); 
 
 })
 
-
-
-/*
-    notes.push(data)
-    fs.writeFileSync("./db/db.json", notes);
-    
-    return notes;
-   // readBack();
-  })
-*/
-
-  //---------------------------------------------------------
+var delete = () => {
+  const currentNotes = read();
   
 
-// 2.  then you ( parse ) the reading
-// var parse = () => {
-//    read();
-//    parsedNote = JSON.parse(notes);
-//    console.log(parsedNote);
-// };
-// 3 then you ( push ) the new note into the array
-// var push = () => {
-//     read ();
-//     notes.push(data);
-//     };
 
-// 4. Then you ( stringify ) the array
-// 5. Then you ( write ) the file again
+}
 
-
-  // 3)  read db.json
-  // function readBack () {
-  //   const notes = JSON.parse(fs.readFileSync("./db/db.json"), "utf8");
-
-  //                                                     console.log(notes);
-  //   res.json(notes);
-  // }  
-
-//const notes = JSON.parse(fs.readFileSync(path.join(__dirname, "./db/db.json"), "utf8"));
-
-//                                                        console.log(notes);
-
-  
 
 
 app.listen(PORT, () => {

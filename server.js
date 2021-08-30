@@ -22,7 +22,7 @@ app.use(express.static('public'));
   // 1 >>>  GET /notes should return the notes.html file.
 
   app.get('/notes', (req, res) => {
-    res.sendFile(path.join(__dirname, '../note-taker-app/public/notes.html'));
+    res.sendFile(path.join(__dirname, './public/notes.html'));
   });
 
 //Link to test in browser : http://localhost:3001/notes
@@ -63,42 +63,58 @@ app.use(express.static('public'));
     });
   }
   var userID=uuid(); 
+
+//   function e1() {
+//     var u='',i=0;
+//     while(i++<36) {
+//         var c='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'[i-1],r=Math.random()*16|0,v=c=='x'?r:(r&0x3|0x8);
+//         u+=(c=='-'||c=='4')?c:v.toString(16)
+//     }
+//     return u;
+// }
+
+// var userID=e1();
+
+// const { v4: uuidv4, v4 } = require('uuid');
+// var userID=v4();
+
 //---------POST ROUTE ----------------------------------------------------------------------------------
 var read = () => {
   return JSON.parse(fs.readFileSync("./db/db.json"), "utf8");   // reads and parse the json file
 };
 
    // write in db.json file -------------
-  app.post('/api/notes', (req, res) => {
+app.post('/api/notes', (req, res) => {
     
     const { title, text } = req.body;
     const addedNote = { title: title, text: text, id: userID };    //adding ID -----
     
     const oldNotes = read(); // Read notes data and save to variable
-    oldNotes.push(addedNote); // Adding the new note to the array of old notes
+    oldNotes.push(addedNote);
+    
+
+    // Adding the new note to the array of old notes
     fs.writeFileSync("./db/db.json", JSON.stringify(oldNotes)); // Re-writing variable (after the note has been added)
-    console.log("New notes added");
-    location.reload(); 
+    console.log("New note ADDED");
+    res.json(true);
+
+    // location.reload(); 
 
 })
 
-
+//--------delete notes----------------------------------------------------------------------
 app.delete('/api/notes/:id', function (req, res) {
-  console.log("DELETE review")
+  console.log("Note DELETED ")
 
   // read 
   const delNotes = read();
-  // delete
-  const result = delNotes.filter(delnote => delnote.id !== id);
-  
-  console.log(result);
-
+  // delete the one with id assigned
+  const result = delNotes.filter(delnote => delnote.id !== req.params.id);
+  // write back to db.json
   fs.writeFileSync("./db/db.json", JSON.stringify(result));
+
+  res.json(true);
 })
-
-
-
-
 
 //----LISTEN PORT -------------------------------------------------
 app.listen(PORT, () => {

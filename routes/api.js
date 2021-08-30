@@ -9,7 +9,7 @@ const router = express.Router();
   
  
   router.get('/notes', (req, res) => {
-    res.sendFile(path.join(__dirname, './data/db.json'));
+    res.sendFile(path.join(__dirname, '../data/db.json'));
     });
  
 //Link to test in browser : http://localhost:3001/api/notes   
@@ -17,7 +17,7 @@ const router = express.Router();
 
 //---------POST ROUTE ----------------------------------------------------------------------------------
 var read = () => {
-    return JSON.parse(fs.readFileSync('./data/db.json'), "utf8");   // reads and parse the json file
+    return JSON.parse(fs.readFileSync(path.join(__dirname, '../data/db.json')), "utf8");   // reads and parse the json file
   };
   
     // write in db.json file -------------
@@ -34,7 +34,7 @@ var read = () => {
       oldNotes.push(addedNote);
       
     // Adding the new note to the array of old notes -------
-      fs.writeFileSync('./data/db.json', JSON.stringify(oldNotes)); // Re-writing variable (after the note has been added)
+      fs.writeFileSync(path.join(__dirname, '../data/db.json'), JSON.stringify(oldNotes)); // Re-writing variable (after the note has been added)
       console.log("New note ADDED");
       res.json(true);
       
@@ -54,7 +54,7 @@ var read = () => {
     // delete the one with id assigned
     const result = delNotes.filter(delnote => delnote.id !== req.params.id);
     // write back to db.json
-    fs.writeFileSync('./data/db.json', JSON.stringify(result));
+    fs.writeFileSync(path.join(__dirname, '../data/db.json'), JSON.stringify(result));
   
     res.json(true);
   })

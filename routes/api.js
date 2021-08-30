@@ -2,8 +2,11 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const router = express.Router();
+const uuidv1 = require('uuidv1');
 
-
+var read = () => {
+  return JSON.parse(fs.readFileSync(path.join(__dirname, '../data/db.json')), "utf8");   // reads and parse the json file
+};
 
 // >>>  GET /api/notes should read the db.json file and return all saved notes as JSON. ---------------
   
@@ -16,15 +19,12 @@ const router = express.Router();
 
 
 //---------POST ROUTE ----------------------------------------------------------------------------------
-var read = () => {
-    return JSON.parse(fs.readFileSync(path.join(__dirname, '../data/db.json')), "utf8");   // reads and parse the json file
-  };
+
   
     // write in db.json file -------------
   router.post('/notes', (req, res) => {
   
     // UUID to generate random ID ---------------------
-      const uuidv1 = require('uuidv1');
       var userID=uuidv1(); 
       
       const { title, text } = req.body;

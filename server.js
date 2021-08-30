@@ -55,29 +55,6 @@ app.use(express.static('public'));
   // (look into npm packages that could do this for you).
 
 
-// ----  function for : random ID --------------------------------------------- 
-  function uuid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
-  var userID=uuid(); 
-
-//   function e1() {
-//     var u='',i=0;
-//     while(i++<36) {
-//         var c='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'[i-1],r=Math.random()*16|0,v=c=='x'?r:(r&0x3|0x8);
-//         u+=(c=='-'||c=='4')?c:v.toString(16)
-//     }
-//     return u;
-// }
-
-// var userID=e1();
-
-// const { v4: uuidv4, v4 } = require('uuid');
-// var userID=v4();
-
 //---------POST ROUTE ----------------------------------------------------------------------------------
 var read = () => {
   return JSON.parse(fs.readFileSync("./db/db.json"), "utf8");   // reads and parse the json file
@@ -85,6 +62,10 @@ var read = () => {
 
    // write in db.json file -------------
 app.post('/api/notes', (req, res) => {
+
+    // UUID to generate random ID ---------------------
+    const uuidv1 = require('uuidv1');
+    var userID=uuidv1(); 
     
     const { title, text } = req.body;
     const addedNote = { title: title, text: text, id: userID };    //adding ID -----
